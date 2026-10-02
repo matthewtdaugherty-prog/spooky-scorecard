@@ -115,7 +115,7 @@
                 <button onclick="linkLocalFile()" id="btn-header-link-file" class="px-3 py-2 rounded-xl font-medium text-xs transition-all duration-200 bg-purple-950/70 text-purple-300 hover:bg-purple-900 border border-purple-700/60 flex items-center gap-1.5" title="Link a local .json file to auto-save to disk">
                     <span>📁</span> <span id="header-file-status">Link File</span>
                 </button>
-                <button onclick="openSettingsModal()" class="px-3 py-2 rounded-xl font-medium text-xs transition-all duration-200 bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700 flex items-center gap-1.5" title="Player Names & Data">
+                <button onclick="openSettingsModal()" class="px-3 py-2 rounded-xl font-medium text-xs transition-all duration-200 bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700 flex items-center gap-1.5" title="Player & Puzzle Names, Data Sync">
                     <span>⚙️</span> Settings
                 </button>
             </div>
@@ -330,7 +330,7 @@
     <div id="modal-container" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
         
         <!-- Settings Modal -->
-        <div id="modal-settings" class="bg-halloween-card border border-purple-800 rounded-2xl max-w-md w-full p-6 shadow-2xl hidden space-y-4">
+        <div id="modal-settings" class="bg-halloween-card border border-purple-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl hidden space-y-4 max-h-[90vh] overflow-y-auto">
             <div class="flex items-center justify-between pb-3 border-b border-purple-900/50">
                 <h3 class="text-xl font-creepster text-orange-400 flex items-center gap-2">
                     <span>⚙️</span> Haunt Settings & Data
@@ -338,11 +338,11 @@
                 <button onclick="closeModal()" class="text-gray-400 hover:text-white font-bold text-lg">&times;</button>
             </div>
             
-            <div class="space-y-3">
+            <div class="space-y-4">
                 <!-- Local File Direct Link Control -->
                 <div class="bg-black/40 border border-purple-800/60 rounded-xl p-3 space-y-2">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-semibold text-purple-300">Direct File Sync (Solution 2):</span>
+                        <span class="text-xs font-semibold text-purple-300">Direct File Sync:</span>
                         <span id="settings-file-badge" class="text-[10px] px-2 py-0.5 rounded-full bg-gray-800 text-gray-400 border border-gray-700">No file linked</span>
                     </div>
                     <p class="text-[11px] text-gray-400 leading-normal">
@@ -358,21 +358,36 @@
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-xs font-semibold text-orange-400 mb-1">Player 1 Name:</label>
-                    <input type="text" id="input-p1-name" value="Player 1" class="w-full bg-black/50 border border-orange-900/60 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-orange-500 font-bold">
+                <!-- Player Names -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-orange-400 mb-1">Player 1 Name:</label>
+                        <input type="text" id="input-p1-name" value="Player 1" class="w-full bg-black/50 border border-orange-900/60 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-orange-500 font-bold">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-blue-400 mb-1">Player 2 Name:</label>
+                        <input type="text" id="input-p2-name" value="Player 2" class="w-full bg-black/50 border border-blue-900/60 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-blue-500 font-bold">
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold text-blue-400 mb-1">Player 2 Name:</label>
-                    <input type="text" id="input-p2-name" value="Player 2" class="w-full bg-black/50 border border-blue-900/60 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-blue-500 font-bold">
+
+                <!-- 7 Puzzle Names Customization -->
+                <div class="bg-black/30 border border-purple-900/60 rounded-xl p-3 space-y-2">
+                    <div class="flex items-center justify-between pb-1 border-b border-purple-900/40">
+                        <label class="text-xs font-semibold text-purple-300">Custom Puzzle Names (7 Puzzles):</label>
+                        <button type="button" onclick="resetPuzzleNamesToDefault()" class="text-[10px] text-gray-400 hover:text-orange-400 transition underline">Reset to Default</button>
+                    </div>
+                    <div id="puzzle-names-container" class="space-y-2 pt-1">
+                        <!-- Populated by JS -->
+                    </div>
                 </div>
-                <div class="pt-2">
+
+                <div class="pt-1">
                     <label class="block text-xs font-semibold text-purple-300 mb-1">Manual Backup / Restore JSON Data:</label>
                     <textarea id="data-textarea" rows="3" class="w-full bg-black/50 border border-purple-900 rounded-xl p-2.5 text-xs font-mono text-orange-300 focus:outline-none focus:border-orange-500"></textarea>
                 </div>
             </div>
 
-            <div class="flex items-center justify-between gap-3 pt-2 border-t border-purple-900/40">
+            <div class="flex items-center justify-between gap-3 pt-3 border-t border-purple-900/40">
                 <button onclick="importData()" class="px-3 py-2 bg-purple-900 hover:bg-purple-800 text-purple-200 rounded-xl text-xs font-semibold transition border border-purple-700">Restore</button>
                 <div class="flex gap-2">
                     <button onclick="copyExportData()" class="px-3 py-2 bg-gray-800 hover:bg-gray-700 text-gray-200 rounded-xl text-xs font-semibold transition">Copy Data</button>
@@ -396,25 +411,33 @@
     <div id="particle-container" class="fixed inset-0 pointer-events-none z-50 overflow-hidden"></div>
 
     <script>
-        // Exactly 7 puzzles
-        const PUZZLES = [
-            { label: "Puzzle #1", key: "puzzle-1" },
-            { label: "Puzzle #2", key: "puzzle-2" },
-            { label: "Puzzle #3", key: "puzzle-3" },
-            { label: "Puzzle #4", key: "puzzle-4" },
-            { label: "Puzzle #5", key: "puzzle-5" },
-            { label: "Puzzle #6", key: "puzzle-6" },
-            { label: "Puzzle #7", key: "puzzle-7", isHalloween: true }
+        const DEFAULT_PUZZLES = [
+            { key: "puzzle-1", defaultLabel: "Puzzle #1" },
+            { key: "puzzle-2", defaultLabel: "Puzzle #2" },
+            { key: "puzzle-3", defaultLabel: "Puzzle #3" },
+            { key: "puzzle-4", defaultLabel: "Puzzle #4" },
+            { key: "puzzle-5", defaultLabel: "Puzzle #5" },
+            { key: "puzzle-6", defaultLabel: "Puzzle #6" },
+            { key: "puzzle-7", defaultLabel: "Puzzle #7", isHalloween: true }
         ];
 
-        const TOTAL_PUZZLES = PUZZLES.length;
+        const TOTAL_PUZZLES = DEFAULT_PUZZLES.length;
         const STORAGE_KEY = 'spooky_puzzle_1v1_oct_2026_v2';
         const SETTINGS_KEY = 'spooky_puzzle_settings_v2';
 
         // App State
         let settings = {
             p1Name: "Player 1",
-            p2Name: "Player 2"
+            p2Name: "Player 2",
+            puzzleNames: {
+                "puzzle-1": "Puzzle #1",
+                "puzzle-2": "Puzzle #2",
+                "puzzle-3": "Puzzle #3",
+                "puzzle-4": "Puzzle #4",
+                "puzzle-5": "Puzzle #5",
+                "puzzle-6": "Puzzle #6",
+                "puzzle-7": "Puzzle #7"
+            }
         };
 
         let puzzleData = {};
@@ -424,13 +447,18 @@
         let fileHandle = null;
 
         function getPuzzleLabel(key) {
-            const puzzle = PUZZLES.find(p => p.key === key);
-            return puzzle ? puzzle.label : key;
+            if (settings.puzzleNames && settings.puzzleNames[key]) {
+                return settings.puzzleNames[key];
+            }
+            const fallback = DEFAULT_PUZZLES.find(p => p.key === key);
+            return fallback ? fallback.defaultLabel : key;
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', async () => {
             loadSettings();
             loadData();
+            await fetchServerData();
+            renderPuzzleSettingsInputs();
             renderScorecardGrid();
             updateStatsAndBanner();
             updateFileHandleUI();
@@ -461,7 +489,8 @@
                         const parsed = JSON.parse(text);
                         if (parsed.puzzleData || parsed.settings) {
                             if (parsed.settings) {
-                                settings = parsed.settings;
+                                settings = Object.assign({}, settings, parsed.settings);
+                                if (!settings.puzzleNames) settings.puzzleNames = {};
                                 saveSettingsToStorage();
                             }
                             if (parsed.puzzleData) {
@@ -481,6 +510,7 @@
                 await writeToLinkedFile();
 
                 updatePlayerNamesUI();
+                renderPuzzleSettingsInputs();
                 renderScorecardGrid();
                 updateStatsAndBanner();
                 updateFileHandleUI();
@@ -496,7 +526,7 @@
         function unlinkLocalFile() {
             fileHandle = null;
             updateFileHandleUI();
-            alertBoxCustom("Disconnected", "Unlinked local file. Changes will only save to browser memory.", "ℹ️");
+            alertBoxCustom("Disconnected", "Unlinked local file. Changes will only save to browser memory and server.", "ℹ️");
         }
 
         async function writeToLinkedFile() {
@@ -516,6 +546,39 @@
             }
         }
 
+        async function syncWithServer() {
+            try {
+                await fetch('/api/data', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ settings, puzzleData })
+                });
+            } catch (e) {
+                // Server might be running statically, ignore gracefully
+            }
+        }
+
+        async function fetchServerData() {
+            try {
+                const res = await fetch('/api/data');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.settings) {
+                        settings = Object.assign({}, settings, data.settings);
+                        if (!settings.puzzleNames) settings.puzzleNames = {};
+                        saveSettingsToStorage();
+                    }
+                    if (data.puzzleData && Object.keys(data.puzzleData).length > 0) {
+                        puzzleData = data.puzzleData;
+                        saveDataToStorage();
+                    }
+                    updatePlayerNamesUI();
+                }
+            } catch (e) {
+                // Not running via express, ignore
+            }
+        }
+
         function updateFileHandleUI() {
             const headerStatus = document.getElementById('header-file-status');
             const settingsBadge = document.getElementById('settings-file-badge');
@@ -529,7 +592,7 @@
                 btnUnlink.classList.remove('hidden');
             } else {
                 headerStatus.innerText = "Link File";
-                settingsBadge.innerText = "No file linked (using localStorage)";
+                settingsBadge.innerText = "No file linked (using localStorage & server)";
                 settingsBadge.className = "text-[10px] px-2 py-0.5 rounded-full bg-gray-800 text-gray-400 border border-gray-700";
                 btnUnlink.classList.add('hidden');
             }
@@ -541,11 +604,18 @@
             try {
                 const saved = localStorage.getItem(SETTINGS_KEY);
                 if (saved) {
-                    settings = JSON.parse(saved);
+                    const parsed = JSON.parse(saved);
+                    settings = Object.assign({}, settings, parsed);
                 }
             } catch (e) {
                 console.error("Error loading settings", e);
             }
+            if (!settings.puzzleNames) settings.puzzleNames = {};
+            DEFAULT_PUZZLES.forEach(p => {
+                if (!settings.puzzleNames[p.key]) {
+                    settings.puzzleNames[p.key] = p.defaultLabel;
+                }
+            });
             updatePlayerNamesUI();
         }
 
@@ -557,14 +627,46 @@
             }
         }
 
+        function renderPuzzleSettingsInputs() {
+            const container = document.getElementById('puzzle-names-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            DEFAULT_PUZZLES.forEach((p, index) => {
+                const currentName = getPuzzleLabel(p.key);
+                const row = document.createElement('div');
+                row.className = "flex items-center gap-2";
+                row.innerHTML = `
+                    <span class="text-[11px] font-mono text-purple-400 w-16 flex-shrink-0">#${index + 1}${p.isHalloween ? ' 🎃' : ''}:</span>
+                    <input type="text" id="input-puzzle-name-${p.key}" value="${currentName}" placeholder="${p.defaultLabel}" class="flex-1 bg-black/50 border border-purple-900/60 focus:border-purple-400 rounded-lg px-2.5 py-1 text-xs text-white placeholder-gray-500 focus:outline-none">
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function resetPuzzleNamesToDefault() {
+            DEFAULT_PUZZLES.forEach(p => {
+                const input = document.getElementById(`input-puzzle-name-${p.key}`);
+                if (input) input.value = p.defaultLabel;
+            });
+        }
+
         function saveSettings() {
             const p1 = document.getElementById('input-p1-name').value.trim() || "Player 1";
             const p2 = document.getElementById('input-p2-name').value.trim() || "Player 2";
             settings.p1Name = p1;
             settings.p2Name = p2;
+
+            if (!settings.puzzleNames) settings.puzzleNames = {};
+            DEFAULT_PUZZLES.forEach(p => {
+                const input = document.getElementById(`input-puzzle-name-${p.key}`);
+                const val = input ? input.value.trim() : '';
+                settings.puzzleNames[p.key] = val || p.defaultLabel;
+            });
             
             saveSettingsToStorage();
             writeToLinkedFile();
+            syncWithServer();
             
             updatePlayerNamesUI();
             renderScorecardGrid();
@@ -597,6 +699,7 @@
         function saveData() {
             saveDataToStorage();
             writeToLinkedFile();
+            syncWithServer();
         }
 
         function updatePlayerNamesUI() {
@@ -679,8 +782,9 @@
             const p1Name = settings.p1Name || "Player 1";
             const p2Name = settings.p2Name || "Player 2";
 
-            PUZZLES.forEach(puzzle => {
+            DEFAULT_PUZZLES.forEach(puzzle => {
                 const dateKey = puzzle.key;
+                const label = getPuzzleLabel(dateKey);
                 const isFinalDay = puzzle.isHalloween || false;
                 const entry = puzzleData[dateKey] || { 
                     p1: { min: '', sec: '', totalSec: 0, notes: '', difficulty: 0 }, 
@@ -728,13 +832,13 @@
                 card.innerHTML = `
                     <div>
                         <div class="flex items-center justify-between mb-3 pb-2 border-b ${isFinalDay ? 'border-orange-500/40' : 'border-purple-900/40'}">
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs font-semibold px-2.5 py-1 rounded-lg ${isFinalDay ? 'bg-orange-600 text-white font-bold tracking-wide shadow-md shadow-orange-600/40' : 'bg-purple-950 text-purple-300 border border-purple-900'}">
-                                    🧩 ${puzzle.label}
+                            <div class="flex items-center gap-2 truncate pr-2">
+                                <span class="text-xs font-semibold px-2.5 py-1 rounded-lg ${isFinalDay ? 'bg-orange-600 text-white font-bold tracking-wide shadow-md shadow-orange-600/40' : 'bg-purple-950 text-purple-300 border border-purple-900'} truncate" title="${label}">
+                                    🧩 ${label}
                                 </span>
-                                ${isFinalDay ? '<span class="text-xs font-creepster text-orange-300 tracking-wider hidden sm:inline">🎃 THE GRAND FINALE 🎃</span>' : ''}
+                                ${isFinalDay ? '<span class="text-xs font-creepster text-orange-300 tracking-wider hidden sm:inline flex-shrink-0">🎃 THE GRAND FINALE 🎃</span>' : ''}
                             </div>
-                            <div>${winnerBadge}</div>
+                            <div class="flex-shrink-0">${winnerBadge}</div>
                         </div>
 
                         <!-- Dual Player Inputs Side by Side -->
@@ -813,7 +917,7 @@
 
                     <div class="flex items-center gap-2 pt-3 mt-2 border-t ${isFinalDay ? 'border-orange-500/30' : 'border-purple-900/30'}">
                         <button onclick="saveDayTimes('${dateKey}')" class="flex-1 py-2 ${isFinalDay ? 'bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 shadow-orange-950/60 font-bold text-white' : 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold shadow-purple-950/40'} rounded-xl text-xs shadow-md transition flex items-center justify-center gap-1.5 truncate px-3">
-                            <span>🎃</span> Save ${puzzle.label}
+                            <span>🎃</span> Save ${label}
                         </button>
                         ${(p1Done || p2Done || p1Notes || p2Notes || p1Diff > 0 || p2Diff > 0) ? `
                             <button onclick="clearDayTimes('${dateKey}')" class="p-2 bg-red-950/60 hover:bg-red-900 text-red-300 rounded-xl text-xs transition border border-red-900/50" title="Clear Puzzle Data">
@@ -1064,6 +1168,7 @@
             msgModal.classList.add('hidden');
             container.classList.remove('hidden');
 
+            renderPuzzleSettingsInputs();
             document.getElementById('data-textarea').value = JSON.stringify({ settings, puzzleData }, null, 2);
         }
 
@@ -1085,9 +1190,11 @@
                 if (parsed && parsed.puzzleData) {
                     puzzleData = parsed.puzzleData;
                     if (parsed.settings) {
-                        settings = parsed.settings;
+                        settings = Object.assign({}, settings, parsed.settings);
+                        if (!settings.puzzleNames) settings.puzzleNames = {};
                         saveSettingsToStorage();
                         updatePlayerNamesUI();
+                        renderPuzzleSettingsInputs();
                     }
                     saveData();
                     renderScorecardGrid();
